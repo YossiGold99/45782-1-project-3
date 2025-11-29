@@ -1,0 +1,9 @@
+{
+    "db": {
+        "host": "host.docker.internal",
+        "port": 3308,
+        "username": "root",
+        "password": "",
+        "database": "goldtours"
+    }
+}

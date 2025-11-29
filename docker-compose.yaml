@@ -1,0 +1,52 @@
+# services - here i am going to list containers that i want to build
+# each service, actually describes a docker run command
+services:
+  # docker run --name goldtours-db -d -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_DATABASE=goldtours -e MYSQL_TCP_PORT=3306 -p 3308:3306 goldtours-db:1.0.0
+  database:
+    container_name: goldtours-db-compose
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=goldtours
+      - MYSQL_TCP_PORT=3306
+    ports:
+      - "3309:3306"
+    build: ./Database
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  
+  # docker run --name goldtours-backend -d -e NODE_ENV=docker  -p 3010:3000 goldtours-backend:1.0.0
+  backend:
+    container_name: goldtours-backend-compose
+    environment:
+      - NODE_ENV=compose
+    ports:
+      - "3020:3000"
+    build: ./Backend
+    depends_on:
+      database:
+        condition: service_healthy
+  
+  # docker run --name goldtours-frontend -d -p 3011:5173 goldtours-frontend:1.0.1
+  frontend:
+    container_name: goldtours-frontend-compose
+    ports: 
+      - 3012:80
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.compose
+
+  # Socket.io server for real-time updates
+  io:
+    container_name: goldtours-io-compose
+    environment:
+      - NODE_ENV=compose
+    ports:
+      - "3021:3001"
+    build: ./io
+    depends_on:
+      - backend
+
