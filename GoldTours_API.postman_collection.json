@@ -1,0 +1,692 @@
+{
+	"info": {
+		"_postman_id": "goldtours-api-collection",
+		"name": "GoldTours API",
+		"description": "API collection for GoldTours application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user"
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@goldtours.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login as admin user and get authentication token (Email: admin@goldtours.com, Password: admin123)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Tours",
+			"item": [
+				{
+					"name": "Get All Tours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tours",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tours"
+							]
+						},
+						"description": "Get all tours (public endpoint)"
+					}
+				},
+				{
+					"name": "Get Tour by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tours/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tours",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get a specific tour by ID (public endpoint)"
+					}
+				},
+				{
+					"name": "Create Tour",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Amazing Paris Tour\",\n    \"description\": \"Explore the beautiful city of Paris\",\n    \"destination\": \"Paris, France\",\n    \"price\": 999.99,\n    \"duration\": 7,\n    \"availableSpots\": 20,\n    \"startDate\": \"2024-06-01\",\n    \"endDate\": \"2024-06-08\",\n    \"imageUrl\": \"https://example.com/paris.jpg\",\n    \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tours",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tours"
+							]
+						},
+						"description": "Create a new tour (requires authentication)"
+					}
+				},
+				{
+					"name": "Update Tour",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Paris Tour\",\n    \"price\": 1099.99,\n    \"availableSpots\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tours/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tours",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Update a tour (requires authentication)"
+					}
+				},
+				{
+					"name": "Delete Tour",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/tours/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tours",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Delete a tour (requires authentication)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Get all users (requires authentication)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Get My Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/my?page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"my"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								}
+							]
+						},
+						"description": "Get current user's bookings with pagination (requires authentication)"
+					}
+				},
+				{
+					"name": "Get All Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/all?page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								}
+							]
+						},
+						"description": "Get all bookings with pagination (requires authentication, ADMIN ONLY)"
+					}
+				},
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tourId\": 1,\n    \"numberOfPersons\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings"
+							]
+						},
+						"description": "Create a new booking (requires authentication)"
+					}
+				},
+				{
+					"name": "Update Booking Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/bookings/:id/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Update booking status (requires authentication, ADMIN ONLY). Status can be: Pending, Confirmed, Cancelled"
+					}
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Delete a booking (requires authentication, ADMIN ONLY)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Likes",
+			"item": [
+				{
+					"name": "Like Tour",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/likes/tours/:id/like",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"likes",
+								"tours",
+								":id",
+								"like"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Like a tour (requires authentication)"
+					}
+				},
+				{
+					"name": "Unlike Tour",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/likes/tours/:id/like",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"likes",
+								"tours",
+								":id",
+								"like"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Unlike a tour (requires authentication)"
+					}
+				},
+				{
+					"name": "Get Tour Likes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/likes/tours/:id/likes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"likes",
+								"tours",
+								":id",
+								"likes"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get all likes for a tour (requires authentication)"
+					}
+				},
+				{
+					"name": "Check User Liked Tour",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/likes/tours/:id/liked",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"likes",
+								"tours",
+								":id",
+								"liked"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Check if current user liked a tour (requires authentication)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Export",
+			"item": [
+				{
+					"name": "Export Users CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/export/users/csv",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"export",
+								"users",
+								"csv"
+							]
+						},
+						"description": "Export users as CSV (requires authentication)"
+					}
+				},
+				{
+					"name": "Export Users Excel",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/export/users/excel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"export",
+								"users",
+								"excel"
+							]
+						},
+						"description": "Export users as Excel (requires authentication)"
+					}
+				},
+				{
+					"name": "Export Tours CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/export/tours/csv",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"export",
+								"tours",
+								"csv"
+							]
+						},
+						"description": "Export tours as CSV (requires authentication)"
+					}
+				},
+				{
+					"name": "Export Tours Excel",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/export/tours/excel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"export",
+								"tours",
+								"excel"
+							]
+						},
+						"description": "Export tours as Excel (requires authentication)"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3020",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
